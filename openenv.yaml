@@ -1,0 +1,16 @@
+name: openenv-invoice-audit
+version: "1.0.0"
+tasks:
+  - id: easy_single_mismatch
+    difficulty: easy
+  - id: medium_policy_tangle
+    difficulty: medium
+  - id: hard_fraud_detection
+    difficulty: hard
+    description: invoice splitting fraud detection
+observation_space:
+  type: object
+  fields: [invoice_id, vendor_name, amount, tax_code, due_date, po_number, risk_level, audit_trail]
+action_space:
+  type: enum
+  values: [review_invoice, request_correction, approve_invoice, escalate_case, ask_vendor_question]
