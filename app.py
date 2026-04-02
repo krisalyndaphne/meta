@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi import Body
 from pydantic import BaseModel
 
 from invoice_audit_env.env import InvoiceAuditEnv
@@ -19,8 +20,10 @@ def health() -> dict[str, str]:
 
 
 @app.post("/reset")
-def reset(payload: ResetRequest) -> dict:
-    obs = env.reset(task_id=payload.task_id, seed=payload.seed)
+def reset(payload: ResetRequest | None = Body(default=None)) -> dict:
+    task_id = payload.task_id if payload is not None else "easy_single_mismatch"
+    seed = payload.seed if payload is not None else None
+    obs = env.reset(task_id=task_id, seed=seed)
     return obs.model_dump()
 
 
