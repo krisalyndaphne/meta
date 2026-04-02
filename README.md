@@ -3,7 +3,7 @@ title: openenv-invoice-audit
 sdk: docker
 pinned: false
 tags:
-  - openenv
+openenv
 ---
 
 # OpenEnv Procurement Invoice Audit
