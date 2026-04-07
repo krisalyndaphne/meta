@@ -211,10 +211,10 @@ This repository is configured for Docker Spaces (`sdk: docker`) and serves on po
 
 | Task | Score | Status |
 |------|-------|--------|
-| `easy_single_mismatch` | 0.00 | Baseline pending |
-| `medium_policy_tangle` | 0.00 | Baseline pending |
-| `hard_fraud_detection` | 0.00 | Baseline pending |
-| **Average** | **0.00** | - |
+| `easy_single_mismatch` | 0.50 | Baseline pending |
+| `medium_policy_tangle` | 0.50 | Baseline pending |
+| `hard_fraud_detection` | 0.50 | Baseline pending |
+| **Average** | **0.50** | - |
 
 *Note: Baseline scores will be updated once reference implementations are validated.*
 

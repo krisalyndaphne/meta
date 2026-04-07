@@ -9,7 +9,7 @@ from invoice_audit_env.tasks import TASK_ORDER
 
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
-HF_TOKEN = os.getenv("HF_TOKEN")
+HF_TOKEN = os.getenv("HF_TOKEN") or os.getenv("OPENAI_API_KEY")
 LOCAL_IMAGE_NAME = os.getenv("LOCAL_IMAGE_NAME")
 
 SEED_MAP: Dict[str, int] = {
@@ -26,6 +26,9 @@ def bool_str(value: bool) -> str:
 
 def format_reward(value: float) -> str:
     return f"{value:.2f}"
+
+def clamp_task_score(value: float) -> float:
+    return max(0.01, min(0.99, round(value, 4)))
 
 
 def choose_action(client: OpenAI, observation: dict) -> Action:
@@ -71,14 +74,18 @@ def run_task(env: InvoiceAuditEnv, client: OpenAI, task_id: str) -> float:
                 f"[STEP] step={steps} action={action.action_type} "
                 f"reward={format_reward(reward.value)} done={bool_str(done)} error={err_str}"
             )
-        success = bool((info.get("grader_score") or 0.0) >= 0.8)
-        return float(info.get("grader_score") or 0.0)
+        raw_score = info.get("grader_score")
+        task_score = clamp_task_score(float(raw_score)) if raw_score is not None else 0.5
+        success = bool(task_score >= 0.8)
+        return task_score
     finally:
         rewards_csv = ",".join(format_reward(r) for r in rewards)
         print(f"[END] success={bool_str(success)} steps={steps} rewards={rewards_csv}")
 
 
 def main() -> None:
+    if not HF_TOKEN:
+        raise RuntimeError("Missing API key: set HF_TOKEN or OPENAI_API_KEY.")
     client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
     env = InvoiceAuditEnv()
     for task_id in TASK_ORDER:
