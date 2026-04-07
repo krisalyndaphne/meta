@@ -2,17 +2,20 @@ from __future__ import annotations
 
 from invoice_audit_env.tasks import TASK_FIXTURES
 
+MIN_SCORE = 0.01
+MAX_SCORE = 0.99
 
 def _clamp(value: float) -> float:
-    return max(0.0, min(1.0, round(value, 4)))
+    # Phase-2 validator requires strict bounds: 0.0 < score < 1.0.
+    return max(MIN_SCORE, min(MAX_SCORE, round(value, 4)))
 
 
 def grade_episode(task_id: str, action_history: list[str]) -> float:
     fixture = TASK_FIXTURES[task_id]
     if action_history == fixture.perfect_actions:
-        return 1.0
+        return MAX_SCORE
     if action_history == fixture.worst_actions:
-        return 0.0
+        return MIN_SCORE
 
     expected = set(fixture.perfect_actions)
     got = set(action_history)
