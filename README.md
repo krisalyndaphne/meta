@@ -206,6 +206,7 @@ curl http://localhost:7860/
 ## Hugging Face Space
 
 This repository is configured for Docker Spaces (`sdk: docker`) and serves on port `7860`. Push to the Hugging Face Hub to auto-deploy.
+For metadata options, see the Spaces config reference: https://huggingface.co/docs/hub/spaces-config-reference
 
 ## Baseline Scores
 
