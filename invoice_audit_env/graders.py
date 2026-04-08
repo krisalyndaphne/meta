@@ -13,9 +13,10 @@ def _clamp(value: float) -> float:
 def grade_episode(task_id: str, action_history: list[str]) -> float:
     fixture = TASK_FIXTURES[task_id]
     if action_history == fixture.perfect_actions:
-        return MAX_SCORE
+        return _clamp(1.0)
+
     if action_history == fixture.worst_actions:
-        return MIN_SCORE
+        return _clamp(0.0)
 
     expected = set(fixture.perfect_actions)
     got = set(action_history)
